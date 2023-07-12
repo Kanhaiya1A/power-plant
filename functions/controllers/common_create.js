@@ -114,7 +114,7 @@ const CreateCheckOutTask = async(req, res) => {
 
 const CreateCheckInTrack = async(req, res) => {
   try {
-    const { emp_id, task_id, remarks, status } = req.body;
+    const { emp_id, task_id, remarks, status, hand_over } = req.body;
     if (!emp_id && !task_id) {
       return res.json({
         status: false,
@@ -126,8 +126,11 @@ const CreateCheckInTrack = async(req, res) => {
       task_id: task_id,
       remarks: remarks,
       status: status,
+      hand_over: hand_over,
     });
     if (saveData) {
+
+      // add create checkInassign 
       return res.json({
         status: true,
         message: 'saved successfully',
@@ -216,7 +219,7 @@ const CreateCheckOutAssign = async(req, res) => {
 
 const CreateCheckOutTrack = async (req, res) => {
   try {
-    const { emp_id, task_id, remarks, status } = req.body;
+    const { emp_id, task_id, remarks, status, hand_over } = req.body;
     if (!emp_id && !task_id) {
       return res.json({
         status: false,
@@ -228,6 +231,7 @@ const CreateCheckOutTrack = async (req, res) => {
       task_id: task_id,
       remarks: remarks,
       status: status,
+      hand_over: hand_over,
     });
     if (saveData) {
       return res.json({

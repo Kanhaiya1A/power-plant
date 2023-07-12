@@ -17,5 +17,11 @@ router.post(
 );
 
 router.get('/getAllEmployees', checkInAssignController.getAllEmployees);
+router.post(
+  '/getEmployeesWithId',
+  upload.none(),
+ checkInAssignController.getEmployeesWithId
+);
+
 
 module.exports = router;

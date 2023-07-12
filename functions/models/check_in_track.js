@@ -18,6 +18,9 @@ const checkInTrack = new Schema(
         status: {
             type: 'boolean',
             // required: true,
+        },
+        hand_over: {
+            type: 'boolean',
         }
     }, {
         timestamps: true,
