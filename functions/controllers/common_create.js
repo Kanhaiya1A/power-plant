@@ -158,12 +158,14 @@ const CreateCheckInAssign = async(req, res) => {
         message: 'All fields are required',
       });
     }
-    let saveData = await CheckInAssign.create({
-      task_id: task_id,
-      task_name: task_name,
-      shift_id: shift_id,
-      emp_id: emp_id,
-    });
+    let saveData = await CheckInAssign.create(
+      {
+        task_id: task_id,
+        task_name: task_name,
+        shift_id: shift_id,
+        emp_id: emp_id,
+      },
+    );
     if (saveData) {
       return res.json({
         status: true,

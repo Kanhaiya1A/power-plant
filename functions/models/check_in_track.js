@@ -21,7 +21,7 @@ const checkInTrack = new Schema(
         },
         hand_over: {
             type: 'boolean',
-        }
+        },
     }, {
         timestamps: true,
     }

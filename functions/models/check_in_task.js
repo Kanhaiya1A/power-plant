@@ -5,17 +5,16 @@ let checkInTask = new Schema(
   {
     task_id: {
       type: 'string',
-      // required: true,
+      required: true,
       // unique: true,
-      // primaryKey: true,
     },
     shift_id: {
       type: 'string',
-      // required: true,
+      required: true,
     },
     task_name: {
       type: 'string',
-      // required: true,
+      required: true,
     },
   },
   {

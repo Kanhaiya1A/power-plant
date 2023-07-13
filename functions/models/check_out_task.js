@@ -7,7 +7,6 @@ let checkOutTask = new Schema(
             type: 'string',
             required: true,
             unique: true,
-            // primaryKey: true,
         },
         shift_id: {
             type: 'string',

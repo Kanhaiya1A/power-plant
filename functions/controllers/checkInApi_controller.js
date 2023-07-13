@@ -5,6 +5,7 @@ const CheckOutAssign = require('./../models/check_out_assign');
 const getCheckInAssign = async (req, res) => {
     try {
     const {emp_id} = req.body;
+    // console.log(checkinassigns.emp_id);
       if (!emp_id) {
         return res.json({
           status: false,
@@ -12,9 +13,37 @@ const getCheckInAssign = async (req, res) => {
           taskList: "",
         });
       }
-      let checkInAssignRecord = await CheckInAssign.find({ emp_id: emp_id });
+      let checkInAssignRecord = await CheckInAssign.aggregate([
+        {
+          $lookup: {
+            from: 'checkintracks',
+            localField: 'task_id',
+            foreignField: 'task_id',
+            as: 'checkintracks',
+          },
+        },
+        {
+          $match: {
+            emp_id: emp_id,
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            task_id: 1,
+            task_name: 1,
+            shift_id: 1,
+            emp_id: 1,
+            remarks: { "$slice": ["$checkintracks.remarks", -1] }, //'$checkintracks.remarks',
+            status: '$checkintracks.status',
+            hand_over: '$checkintracks.hand_over',
+          },
+        },
+      ]);
 
-      if (checkInAssignRecord && checkInAssignRecord.length) {
+      // console.log('checkInAssignRecord', checkInAssignRecord);
+
+      if (checkInAssignRecord ){//&& checkInAssignRecord.length) {
         return res.json({
           status: true,
           message: 'success',
