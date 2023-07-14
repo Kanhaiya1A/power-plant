@@ -114,7 +114,7 @@ const CreateCheckOutTask = async(req, res) => {
 
 const CreateCheckInTrack = async(req, res) => {
   try {
-    const { emp_id, task_id, remarks, status, hand_over } = req.body;
+    const { emp_id, task_id, remarks, status, hand_over, hand_over_emp_id } = req.body;
     if (!emp_id && !task_id) {
       return res.json({
         status: false,
@@ -129,8 +129,30 @@ const CreateCheckInTrack = async(req, res) => {
       hand_over: hand_over,
     });
     if (saveData) {
+      // add create checkInassign
+      if(hand_over){
+        let fetchTaskTable = await CheckInTask.findOne({ task_id });
 
-      // add create checkInassign 
+        if(!fetchTaskTable){
+          return res.json({
+            status: false,
+            message: 'failure',
+          })
+        }
+        const {shift_id, task_name} = fetchTaskTable;
+        let saveData = await CheckInAssign.create({
+          task_id: task_id,
+          task_name: task_name,
+          shift_id: shift_id,
+          emp_id: hand_over_emp_id,
+        });
+        if(saveData){
+          return res.json({
+            status: true,
+            message: 'successfully assign the task!'
+          })
+        }
+      }
       return res.json({
         status: true,
         message: 'saved successfully',
@@ -221,7 +243,7 @@ const CreateCheckOutAssign = async(req, res) => {
 
 const CreateCheckOutTrack = async (req, res) => {
   try {
-    const { emp_id, task_id, remarks, status, hand_over } = req.body;
+    const { emp_id, task_id, remarks, status, hand_over, hand_over_emp_id } = req.body;
     if (!emp_id && !task_id) {
       return res.json({
         status: false,
@@ -236,6 +258,31 @@ const CreateCheckOutTrack = async (req, res) => {
       hand_over: hand_over,
     });
     if (saveData) {
+
+       if (hand_over) {
+         let fetchTaskTable = await CheckOutTask.findOne({ task_id });
+
+         if (!fetchTaskTable) {
+           return res.json({
+             status: false,
+             message: 'failure',
+           });
+         }
+         const { shift_id, task_name } = fetchTaskTable;
+         let saveData = await CheckOutAssign.create({
+           task_id: task_id,
+           task_name: task_name,
+           shift_id: shift_id,
+           emp_id: hand_over_emp_id,
+         });
+         if (saveData) {
+           return res.json({
+             status: true,
+             message: 'successfully assign the task!',
+           });
+         }
+       }
+
       return res.json({
         status: true,
         message: 'saved successfully',

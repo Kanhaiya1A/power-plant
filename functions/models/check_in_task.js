@@ -6,7 +6,7 @@ let checkInTask = new Schema(
     task_id: {
       type: 'string',
       required: true,
-      // unique: true,
+      unique: true,
     },
     shift_id: {
       type: 'string',

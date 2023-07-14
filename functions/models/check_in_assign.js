@@ -6,7 +6,6 @@ const checkInAssign = new Schema(
     task_id: {
       type: 'string',
       required: true,
-      unique: true,
     },
     task_name: {
       type: 'string',
@@ -20,12 +19,6 @@ const checkInAssign = new Schema(
       type: 'string',
       required: true,
     },
-    // checkInTrack: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'CheckInTrack',
-    //   },
-    // ],
   },
   { timestamps: true }
 );

@@ -27,6 +27,16 @@ const getCheckInAssign = async (req, res) => {
             emp_id: emp_id,
           },
         },
+        // {
+        //   $unwind: '$checkintracks',
+        // },
+        // {
+        //   $sort: { 'checkintracks.remarks': -1 },
+        // },
+        // { $slice: [ '$checkintracks.remarks', -1 ] },
+        // { 
+        //   $slice: [1, -1]
+        // },
         {
           $project: {
             _id: 0,
@@ -34,9 +44,9 @@ const getCheckInAssign = async (req, res) => {
             task_name: 1,
             shift_id: 1,
             emp_id: 1,
-            remarks: { "$slice": ["$checkintracks.remarks", -1] }, //'$checkintracks.remarks',
-            status: '$checkintracks.status',
-            hand_over: '$checkintracks.hand_over',
+            remarks: { $slice: ['$checkintracks.remarks', -1] }, //'$checkintracks.remarks',
+            status: { $slice: ['$checkintracks.status', -1] }, //'$checkintracks.status',
+            hand_over: { $slice: ['$checkintracks.hand_over', -1] }, //'$checkintracks.hand_over',
           },
         },
       ]);
@@ -77,8 +87,34 @@ const getCheckOutAssign = async (req, res) => {
         taskList: "",
       });
     }
-    let checkOutAssignRecord = await CheckOutAssign.find({ emp_id: emp_id });
-
+    // let checkOutAssignRecord = await CheckOutAssign.find({ emp_id: emp_id });
+     let checkOutAssignRecord = await CheckOutAssign.aggregate([
+       {
+         $lookup: {
+           from: 'checkouttracks',
+           localField: 'task_id',
+           foreignField: 'task_id',
+           as: 'checkouttracks',
+         },
+       },
+       {
+         $match: {
+           emp_id: emp_id,
+         },
+       },
+       {
+         $project: {
+           _id: 0,
+           task_id: 1,
+           task_name: 1,
+           shift_id: 1,
+           emp_id: 1,
+           remarks: { $slice: ['$checkouttracks.remarks', -1] }, //'$checkintracks.remarks',
+           status: { $slice: ['$checkouttracks.status', -1] }, //'$checkintracks.status',
+           hand_over: { $slice: ['$checkouttracks.hand_over', -1] }, //'$checkintracks.hand_over',
+         },
+       },
+     ]);
     if (checkOutAssignRecord && checkOutAssignRecord.length) {
       return res.json({
         status: true,

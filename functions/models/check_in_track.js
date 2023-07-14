@@ -22,6 +22,9 @@ const checkInTrack = new Schema(
         hand_over: {
             type: 'boolean',
         },
+        hand_over_emp_id:{
+            type: 'string',
+        }
     }, {
         timestamps: true,
     }
