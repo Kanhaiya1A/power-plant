@@ -18,7 +18,9 @@ const getCheckInAssign = async (req, res) => {
           $lookup: {
             from: 'checkintracks',
             localField: 'task_id',
+            localField: 'emp_id',
             foreignField: 'task_id',
+            foreignField: 'emp_id',
             as: 'checkintracks',
           },
         },
@@ -34,7 +36,7 @@ const getCheckInAssign = async (req, res) => {
         //   $sort: { 'checkintracks.remarks': -1 },
         // },
         // { $slice: [ '$checkintracks.remarks', -1 ] },
-        // { 
+        // {
         //   $slice: [1, -1]
         // },
         {

@@ -121,12 +121,23 @@ const CreateCheckInTrack = async(req, res) => {
         message: 'Emp_id and task_id are required',
       });
     }
+    let fetchCheckInTrack = await CheckInTrack.findOne({emp_id});
+    // console.log(fetchCheckInTrack.current_day);
+    if(fetchCheckInTrack.current_day == new Date().getDay()){
+      return res.json({
+        status: false,
+        message: 'Record already created in this day, try again after a day',
+      })
+
+    }
     let saveData = await CheckInTrack.create({
       emp_id: emp_id,
       task_id: task_id,
       remarks: remarks,
       status: status,
       hand_over: hand_over,
+      current_day: new Date().getDay(),
+
     });
     if (saveData) {
       // add create checkInassign
