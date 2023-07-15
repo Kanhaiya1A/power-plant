@@ -95,7 +95,9 @@ const getCheckOutAssign = async (req, res) => {
          $lookup: {
            from: 'checkouttracks',
            localField: 'task_id',
+           localField: 'emp_id',
            foreignField: 'task_id',
+           foreignField: 'emp_id',
            as: 'checkouttracks',
          },
        },
