@@ -102,10 +102,20 @@ const getCheckOutAssign = async (req, res) => {
        {
          $lookup: {
            from: 'checkouttracks',
-           localField: 'task_id',
-           localField: 'emp_id',
-           foreignField: 'task_id',
-           foreignField: 'emp_id',
+           let: { field1Value: '$task_id', field2Value: '$emp_id' },
+           pipeline: [
+             {
+               $match: {
+                 $expr: {
+                   $and: [
+                     { $eq: ['$task_id', '$$field1Value'] },
+                     { $eq: ['$emp_id', '$$field2Value'] },
+                   ],
+                 },
+               },
+             },
+             // Add any additional pipeline stages if needed
+           ],
            as: 'checkouttracks',
          },
        },

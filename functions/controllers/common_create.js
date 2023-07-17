@@ -143,9 +143,13 @@ const CreateCheckInTrack = async(req, res) => {
     });
     if (saveData) {
       // add create checkInassign
-      if(hand_over){
-        let fetchTaskTable = await CheckInTask.findOne({ task_id });
+      console.log('hand_over', hand_over);
+      if(hand_over == "true"){
+        console.log('save*****************************8');
 
+        let fetchTaskTable = await CheckInTask.findOne({ task_id });
+        let employee = await Employee.findOne({ emp_id});
+        console.log('checking', employee.emp_name);
         if(!fetchTaskTable){
           return res.json({
             status: false,
@@ -155,7 +159,7 @@ const CreateCheckInTrack = async(req, res) => {
         const {shift_id, task_name} = fetchTaskTable;
         let saveData = await CheckInAssign.create({
           task_id: task_id,
-          task_name: task_name,
+          task_name: task_name + " assign by "+ employee.emp_name + " With remarks: " + remarks,
           shift_id: shift_id,
           emp_id: hand_over_emp_id,
         });
@@ -281,11 +285,12 @@ const CreateCheckOutTrack = async (req, res) => {
       hand_over: hand_over,
       current_day: new Date().getDay(),
     });
+    console.log('save', saveData);
     if (saveData) {
 
-       if (hand_over) {
+       if (hand_over == "true") {
          let fetchTaskTable = await CheckOutTask.findOne({ task_id });
-
+        let employee = await Employee.findOne({ emp_id });
          if (!fetchTaskTable) {
            return res.json({
              status: false,
@@ -295,7 +300,7 @@ const CreateCheckOutTrack = async (req, res) => {
          const { shift_id, task_name } = fetchTaskTable;
          let saveData = await CheckOutAssign.create({
            task_id: task_id,
-           task_name: task_name,
+           task_name: task_name + " assign by "+ employee.emp_name + " With remarks: " + remarks,
            shift_id: shift_id,
            emp_id: hand_over_emp_id,
          });
