@@ -121,17 +121,17 @@ const CreateCheckInTrack = async(req, res) => {
         message: 'Emp_id and task_id are required',
       });
     }
-    let fetchCheckInTrack = await CheckInTrack.findOne({emp_id});
+    // let fetchCheckInTrack = await CheckInTrack.findOne({task_id: task_id, emp_id: emp_id});
     // console.log(fetchCheckInTrack.current_day);
-    if (
-      (fetchCheckInTrack != null && fetchCheckInTrack.current_day) ==
-      new Date().getDay()
-    ) {
-      return res.json({
-        status: false,
-        message: 'Record already created in this day, try again after a day',
-      });
-    }
+    // if (
+    //   (fetchCheckInTrack != null && fetchCheckInTrack.current_day) ==
+    //   new Date().getDay()
+    // ) {
+    //   return res.json({
+    //     status: false,
+    //     message: 'Record already created in this day, try again after a day',
+    //   });
+    // }
     let saveData = await CheckInTrack.create({
       emp_id: emp_id,
       task_id: task_id,
@@ -264,15 +264,15 @@ const CreateCheckOutTrack = async (req, res) => {
         message: 'Emp_id and task_id are required',
       });
     }
-     let fetchCheckOutTrack = await CheckOutTrack.findOne({ emp_id });
-      if (
-        fetchCheckOutTrack != null && fetchCheckOutTrack.current_day == new Date().getDay()
-      ) {
-        return res.json({
-          status: false,
-          message: 'Record already created in this day, try again after a day',
-        });
-      }
+    //  let fetchCheckOutTrack = await CheckOutTrack.findOne({ emp_id });
+    //   if (
+    //     fetchCheckOutTrack != null && fetchCheckOutTrack.current_day == new Date().getDay()
+    //   ) {
+    //     return res.json({
+    //       status: false,
+    //       message: 'Record already created in this day, try again after a day',
+    //     });
+    //   }
     let saveData = await CheckOutTrack.create({
       emp_id: emp_id,
       task_id: task_id,

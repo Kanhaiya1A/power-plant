@@ -18,11 +18,11 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 app.use('/api', require('./routes'));
-// app.use('/.netlify/functions/index', require('./routes'));
+app.use('/.netlify/functions/index', require('./routes'));
 
 const port = 3000;
 const server = app.listen(port, () => {
   console.log(`server is running at port no. ` + port);
 });
 
-// module.exports.handler = serverless(app);
+module.exports.handler = serverless(app);
