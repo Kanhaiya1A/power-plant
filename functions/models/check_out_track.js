@@ -25,9 +25,15 @@ const checkOutTrack = new Schema(
     hand_over_emp_id: {
       type: 'string',
     },
-    current_day:{
+    current_day: {
       type: 'string',
-    }
+    },
+    latitude: {
+      type: 'string',
+    },
+    longitude: {
+      type: 'string',
+    },
   },
   { timestamps: true }
 );

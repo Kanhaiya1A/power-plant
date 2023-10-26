@@ -2,7 +2,7 @@ const Employee = require('../models/employee');
 const CheckInTask = require('./../models/check_in_task');
 const CheckOutTask = require('./../models/check_out_task');
 const CheckInAssign = require('./../models/check_in_assign');
-const CheckOutAssign = require('./../models/check_out_assign')
+const CheckOutAssign = require('./../models/check_out_assign');
 const CheckInTrack = require('./../models/check_in_track');
 const CheckOutTrack = require('./../models/check_out_track');
 
@@ -27,17 +27,17 @@ const CreateEmployee = async (req, res) => {
       emp_password: emp_password,
     });
 
-   if (saveData) {
-     return res.json({
-       status: true,
-       message: 'saved successfully',
-     });
-   } else {
-     return res.json({
-       status: false,
-       message: 'Not saved successfully',
-     });
-   }
+    if (saveData) {
+      return res.json({
+        status: true,
+        message: 'saved successfully',
+      });
+    } else {
+      return res.json({
+        status: false,
+        message: 'Not saved successfully',
+      });
+    }
   } catch (error) {
     return res.json({
       status: false,
@@ -48,38 +48,38 @@ const CreateEmployee = async (req, res) => {
 
 const CreateCheckInTask = async (req, res) => {
   try {
-    const {task_id, shift_id, task_name} = req.body;
-    if(!task_id && !shift_id && !task_name) {
+    const { task_id, shift_id, task_name } = req.body;
+    if (!task_id && !shift_id && !task_name) {
       return res.json({
         status: false,
         message: 'All fields are required',
-      })
+      });
     }
     let saveData = await CheckInTask.create({
       task_id: task_id,
       shift_id: shift_id,
       task_name: task_name,
-    })
-     if (saveData) {
-       return res.json({
+    });
+    if (saveData) {
+      return res.json({
         status: true,
         message: 'saved successfully',
-       })
-     } else {
-       return res.json({
-         status: false,
-         message: 'Not saved successfully',
-       });
-     }
+      });
+    } else {
+      return res.json({
+        status: false,
+        message: 'Not saved successfully',
+      });
+    }
   } catch (error) {
     return res.json({
       status: false,
       message: error.message,
-    })
+    });
   }
-}
+};
 
-const CreateCheckOutTask = async(req, res) => {
+const CreateCheckOutTask = async (req, res) => {
   try {
     const { task_id, shift_id, task_name } = req.body;
     if (!task_id && !shift_id && !task_name) {
@@ -112,9 +112,18 @@ const CreateCheckOutTask = async(req, res) => {
   }
 };
 
-const CreateCheckInTrack = async(req, res) => {
+const CreateCheckInTrack = async (req, res) => {
   try {
-    const { emp_id, task_id, remarks, status, hand_over, hand_over_emp_id } = req.body;
+    const {
+      emp_id,
+      task_id,
+      remarks,
+      status,
+      hand_over,
+      hand_over_emp_id,
+      latitude,
+      longitude,
+    } = req.body;
     if (!emp_id && !task_id) {
       return res.json({
         status: false,
@@ -139,35 +148,41 @@ const CreateCheckInTrack = async(req, res) => {
       status: status,
       hand_over: hand_over,
       current_day: new Date().getDay(),
-
+      latitude: latitude,
+      longitude: longitude,
     });
     if (saveData) {
       // add create checkInassign
       console.log('hand_over', hand_over);
-      if(hand_over == "true"){
+      if (hand_over == 'true') {
         console.log('save*****************************8');
 
         let fetchTaskTable = await CheckInTask.findOne({ task_id });
-        let employee = await Employee.findOne({ emp_id});
+        let employee = await Employee.findOne({ emp_id });
         console.log('checking', employee.emp_name);
-        if(!fetchTaskTable){
+        if (!fetchTaskTable) {
           return res.json({
             status: false,
             message: 'failure',
-          })
+          });
         }
-        const {shift_id, task_name} = fetchTaskTable;
+        const { shift_id, task_name } = fetchTaskTable;
         let saveData = await CheckInAssign.create({
           task_id: task_id,
-          task_name: task_name + " assign by "+ employee.emp_name + " With remarks: " + remarks,
+          task_name:
+            task_name +
+            ' assign by ' +
+            employee.emp_name +
+            ' With remarks: ' +
+            remarks,
           shift_id: shift_id,
           emp_id: hand_over_emp_id,
         });
-        if(saveData){
+        if (saveData) {
           return res.json({
             status: true,
-            message: 'successfully assign the task!'
-          })
+            message: 'successfully assign the task!',
+          });
         }
       }
       return res.json({
@@ -188,7 +203,7 @@ const CreateCheckInTrack = async(req, res) => {
   }
 };
 
-const CreateCheckInAssign = async(req, res) => {
+const CreateCheckInAssign = async (req, res) => {
   try {
     const { task_id, task_name, shift_id, emp_id } = req.body;
     if (!task_id && !task_name && !shift_id && !emp_id) {
@@ -197,14 +212,12 @@ const CreateCheckInAssign = async(req, res) => {
         message: 'All fields are required',
       });
     }
-    let saveData = await CheckInAssign.create(
-      {
-        task_id: task_id,
-        task_name: task_name,
-        shift_id: shift_id,
-        emp_id: emp_id,
-      },
-    );
+    let saveData = await CheckInAssign.create({
+      task_id: task_id,
+      task_name: task_name,
+      shift_id: shift_id,
+      emp_id: emp_id,
+    });
     if (saveData) {
       return res.json({
         status: true,
@@ -224,7 +237,7 @@ const CreateCheckInAssign = async(req, res) => {
   }
 };
 
-const CreateCheckOutAssign = async(req, res) => {
+const CreateCheckOutAssign = async (req, res) => {
   try {
     const { task_id, task_name, shift_id, emp_id } = req.body;
     if (!task_id && !task_name && !shift_id && !emp_id) {
@@ -260,7 +273,16 @@ const CreateCheckOutAssign = async(req, res) => {
 
 const CreateCheckOutTrack = async (req, res) => {
   try {
-    const { emp_id, task_id, remarks, status, hand_over, hand_over_emp_id } = req.body;
+    const {
+      emp_id,
+      task_id,
+      remarks,
+      status,
+      hand_over,
+      hand_over_emp_id,
+      latitude,
+      longitude,
+    } = req.body;
     console.log(req.body);
     if (!emp_id && !task_id) {
       return res.json({
@@ -284,33 +306,39 @@ const CreateCheckOutTrack = async (req, res) => {
       status: status,
       hand_over: hand_over,
       current_day: new Date().getDay(),
+      latitude: latitude,
+      longitude: longitude,
     });
     console.log('save', saveData);
     if (saveData) {
-
-       if (hand_over == "true") {
-         let fetchTaskTable = await CheckOutTask.findOne({ task_id });
+      if (hand_over == 'true') {
+        let fetchTaskTable = await CheckOutTask.findOne({ task_id });
         let employee = await Employee.findOne({ emp_id });
-         if (!fetchTaskTable) {
-           return res.json({
-             status: false,
-             message: 'failure',
-           });
-         }
-         const { shift_id, task_name } = fetchTaskTable;
-         let saveData = await CheckOutAssign.create({
-           task_id: task_id,
-           task_name: task_name + " assign by "+ employee.emp_name + " With remarks: " + remarks,
-           shift_id: shift_id,
-           emp_id: hand_over_emp_id,
-         });
-         if (saveData) {
-           return res.json({
-             status: true,
-             message: 'successfully assign the task!',
-           });
-         }
-       }
+        if (!fetchTaskTable) {
+          return res.json({
+            status: false,
+            message: 'failure',
+          });
+        }
+        const { shift_id, task_name } = fetchTaskTable;
+        let saveData = await CheckOutAssign.create({
+          task_id: task_id,
+          task_name:
+            task_name +
+            ' assign by ' +
+            employee.emp_name +
+            ' With remarks: ' +
+            remarks,
+          shift_id: shift_id,
+          emp_id: hand_over_emp_id,
+        });
+        if (saveData) {
+          return res.json({
+            status: true,
+            message: 'successfully assign the task!',
+          });
+        }
+      }
 
       return res.json({
         status: true,
@@ -330,5 +358,11 @@ const CreateCheckOutTrack = async (req, res) => {
   }
 };
 module.exports = {
-  CreateEmployee, CreateCheckInTask, CreateCheckOutTask, CreateCheckInTrack, CreateCheckOutTrack, CreateCheckInAssign, CreateCheckOutAssign
+  CreateEmployee,
+  CreateCheckInTask,
+  CreateCheckOutTask,
+  CreateCheckInTrack,
+  CreateCheckOutTrack,
+  CreateCheckInAssign,
+  CreateCheckOutAssign,
 };

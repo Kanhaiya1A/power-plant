@@ -21,6 +21,9 @@ let employeeSchema = new Schema(
       type: 'string',
       required: true,
     },
+    department: {
+      type: 'string',
+    },
   },
   {
     timestamps: true,
