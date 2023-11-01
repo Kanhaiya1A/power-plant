@@ -60,6 +60,8 @@ const getCheckInAssign = async (req, res) => {
         },
       },
     ]);
+    checkInAssignRecord.sort((a, b) => a.task_name.localeCompare(b.task_name));
+
 
     // console.log('checkInAssignRecord', checkInAssignRecord);
 
@@ -136,6 +138,8 @@ const getCheckOutAssign = async (req, res) => {
         },
       },
     ]);
+    checkOutAssignRecord.sort((a, b) => a.task_name.localeCompare(b.task_name));
+
     if (checkOutAssignRecord && checkOutAssignRecord.length) {
       return res.json({
         status: true,
