@@ -11,11 +11,8 @@ const CheckOutAssign = require('./../models/check_out_assign');
 const checkInReport = async (req, res) => {
   try {
     const emp_id = req.query.emp_id;
-    // const start_date = req.query.start_date;
-    // const end_date = req.query.end_date;
-
+    const emp_name = req.query.emp_name;
     const workbook = XLSX.utils.book_new();
-
     // const Data = await CheckInTrack.find({});
     const Data = await CheckInAssign.aggregate([
       {
@@ -33,19 +30,7 @@ const checkInReport = async (req, res) => {
       },
     ]);
 
-    // console.log('Data', Data);
-
     const data = [];
-    // data.push([
-    //   'emp_id',
-    //   'task_id',
-    //   'remarks',
-    //   'status',
-    //   'hand_over',
-    //   'latitude',
-    //   'longitude',
-    //   'map',
-    // ]);
     data.push([
       'emp_id',
       'emp_name',
@@ -62,24 +47,27 @@ const checkInReport = async (req, res) => {
 
     Data.forEach((item, index) => {
       data.push([
-        item?.emp_id || 'emp_id',
-        item?.tracktask[0]
-          ? item?.tracktask[0]?.emp_name || 'emp_name'
-          : 'emp_name',
-        item?.task_name || 'task_name',
-        item?.tracktask[0] ? item.tracktask[0].status || 'status' : 'status',
-        item?.tracktask[0]
-          ? item.tracktask[0].hand_over || 'hand_over'
-          : 'hand_over',
-        item?.tracktask[0]
-          ? item?.tracktask[0]?.latitude || 'latitude'
-          : 'latitude',
-        item?.tracktask[0]
-          ? item?.tracktask[0]?.longitude || 'longitude'
-          : 'longitude',
-        item?.tracktask[0]?.longitude
-          ? `https://maps.google.com/?q=${item?.tracktask[0]?.latitude},${item?.tracktask[0]?.longitude}`
-          : 'longitude',
+        // 'emp_id',
+        item?.emp_id || ' ',
+        // 'emp_name',
+        emp_name ? emp_name : ' ',
+        // 'task_detail',
+        item?.task_name ? item.task_name : ' ',
+        // 'status',
+        item?.tracktask[0]?.status ? 'completed' : 'pending',
+
+        // 'hand_over_status',
+        item?.tracktask[0]?.hand_over ? 'true' : 'false',
+        // 'handover_to',
+        item?.tracktask[0]?.hand_over_emp_name
+          ? item?.tracktask[0]?.hand_over_emp_name
+          : ' ',
+        // 'latitude',
+        item?.tracktask[0]?.latitude ? item?.tracktask[0]?.latitude : ' ',
+        // 'longitude',
+        item?.tracktask[0]?.longitude ? item?.tracktask[0]?.longitude : ' ',
+        // 'map',
+        item?.tracktask[0]?.latitude ? `https://maps.google.com/?q=${item?.tracktask[0]?.latitude},${item?.tracktask[0]?.longitude}` : ' ',
       ]);
     });
 
@@ -307,6 +295,7 @@ const checkInReport = async (req, res) => {
 const checkOutReport = async (req, res) => {
   try {
     const emp_id = req.query.emp_id;
+    const emp_name = req.query.emp_name;
     // const start_date = req.query.start_date;
     // const end_date = req.query.end_date;
 
@@ -346,24 +335,29 @@ const checkOutReport = async (req, res) => {
 
     Data.forEach((item, index) => {
       data.push([
-        item?.emp_id || 'emp_id',
-        item?.tracktask[0]
-          ? item?.tracktask[0]?.emp_name || 'emp_name'
-          : 'emp_name',
-        item?.task_name || 'task_name',
-        item?.tracktask[0] ? item.tracktask[0].status || 'status' : 'status',
-        item?.tracktask[0]
-          ? item.tracktask[0].hand_over || 'hand_over'
-          : 'hand_over',
-        item?.tracktask[0]
-          ? item?.tracktask[0]?.latitude || 'latitude'
-          : 'latitude',
-        item?.tracktask[0]
-          ? item?.tracktask[0]?.longitude || 'longitude'
-          : 'longitude',
-        item?.tracktask[0]?.longitude
+        // 'emp_id',
+        item?.emp_id || ' ',
+        // 'emp_name',
+        emp_name ? emp_name : ' ',
+        // 'task_detail',
+        item?.task_name ? item.task_name : ' ',
+        // 'status',
+        item?.tracktask[0]?.status ? 'completed' : 'pending',
+
+        // 'hand_over_status',
+        item?.tracktask[0]?.hand_over ? 'true' : 'false',
+        // 'handover_to',
+        item?.tracktask[0]?.hand_over_emp_name
+          ? item?.tracktask[0]?.hand_over_emp_name
+          : ' ',
+        // 'latitude',
+        item?.tracktask[0]?.latitude ? item?.tracktask[0]?.latitude : ' ',
+        // 'longitude',
+        item?.tracktask[0]?.longitude ? item?.tracktask[0]?.longitude : ' ',
+        // 'map',
+        item?.tracktask[0]?.latitude
           ? `https://maps.google.com/?q=${item?.tracktask[0]?.latitude},${item?.tracktask[0]?.longitude}`
-          : 'longitude',
+          : ' ',
       ]);
     });
 
