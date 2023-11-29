@@ -9,6 +9,9 @@ let employeeSchema = new Schema(
       required: true,
       unique: true,
     },
+    role: {
+      type: String,
+    },
     emp_name: {
       type: 'string',
       required: true,

@@ -5,7 +5,6 @@ const CheckOutAssign = require('./../models/check_out_assign');
 const getCheckInAssign = async (req, res) => {
   try {
     const { emp_id } = req.body;
-    // console.log(checkinassigns.emp_id);
     if (!emp_id) {
       return res.json({
         status: false,
@@ -201,7 +200,10 @@ const getEmployeesWithId = async (req, res) => {
     let fetchEmployees = await Employee.find();
 
     fetchEmployees = fetchEmployees.filter((employee) => {
-      return employee.emp_id != emp_id;
+      return (
+        employee.emp_id != emp_id &&
+        employee.department == validEmployeeId.department
+      );
     });
     if (fetchEmployees) {
       return res.json({

@@ -37,6 +37,8 @@ const login = async (req, res) => {
         message: 'verified',
         employeeId: employee.emp_id,
         employeeName: employee.emp_name,
+        role: employee.role,
+        department: employee.department
       });
     }
   } catch (error) {

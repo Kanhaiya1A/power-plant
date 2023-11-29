@@ -22,13 +22,14 @@ const checkOutTrack = new Schema(
     hand_over: {
       type: 'boolean',
     },
+    hand_over_approved: {
+      type: 'boolean',
+      default: false,
+    },
     hand_over_emp_id: {
       type: 'string',
     },
     hand_over_emp_name: {
-      type: 'string',
-    },
-    current_day: {
       type: 'string',
     },
     latitude: {
