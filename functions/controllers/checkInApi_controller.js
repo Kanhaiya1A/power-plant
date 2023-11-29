@@ -161,7 +161,7 @@ const getCheckOutAssign = async (req, res) => {
   }
 };
 
-const getAllEmployees = async (req, res) => {
+// const getAllEmployees = async (req, res) => {
   try {
     let fetchAllEmployees = await Employee.find();
     if (fetchAllEmployees) {
@@ -184,52 +184,52 @@ const getAllEmployees = async (req, res) => {
       employees: '',
     });
   }
-};
+// };
 
-const getEmployeesWithId = async (req, res) => {
-  try {
-    const { emp_id } = req.body;
-    let validEmployeeId = await Employee.find({ emp_id });
-    if (validEmployeeId.length == 0) {
-      return res.json({
-        status: false,
-        message: 'failure',
-        employees: '',
-      });
-    }
-    let fetchEmployees = await Employee.find();
+// const getEmployeesWithId = async (req, res) => {
+//   try {
+//     const { emp_id } = req.body;
+//     let validEmployeeId = await Employee.find({ emp_id });
+//     if (validEmployeeId.length == 0) {
+//       return res.json({
+//         status: false,
+//         message: 'failure',
+//         employees: '',
+//       });
+//     }
+//     let fetchEmployees = await Employee.find();
 
-    fetchEmployees = fetchEmployees.filter((employee) => {
-      return (
-        employee.emp_id != emp_id &&
-        employee.department == validEmployeeId.department
-      );
-    });
-    if (fetchEmployees) {
-      return res.json({
-        status: true,
-        message: 'success',
-        employees: fetchEmployees,
-      });
-    } else {
-      return res.json({
-        status: false,
-        message: 'failure',
-        employees: '',
-      });
-    }
-  } catch (error) {
-    return res.json({
-      status: false,
-      message: error.message,
-      employees: '',
-    });
-  }
-};
+//     fetchEmployees = fetchEmployees.filter((employee) => {
+//       return (
+//         employee.emp_id != emp_id &&
+//         employee.department == validEmployeeId.department
+//       );
+//     });
+//     if (fetchEmployees) {
+//       return res.json({
+//         status: true,
+//         message: 'success',
+//         employees: fetchEmployees,
+//       });
+//     } else {
+//       return res.json({
+//         status: false,
+//         message: 'failure',
+//         employees: '',
+//       });
+//     }
+//   } catch (error) {
+//     return res.json({
+//       status: false,
+//       message: error.message,
+//       employees: '',
+//     });
+//   }
+// };
 
 module.exports = {
   getCheckInAssign,
   getCheckOutAssign,
-  getAllEmployees,
-  getEmployeesWithId,
+  // getAllEmployees,
+  // getEmployeesWithId,
 };
