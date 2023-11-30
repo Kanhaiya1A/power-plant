@@ -14,6 +14,15 @@ const attendanceSchema = mongoose.Schema(
     department: {
       type: String,
     },
+    latitude: {
+      type: String,
+    },
+    longitude: {
+      type: String,
+    },
+    type: {
+      type: String,
+    },
     check_in_time: {
       type: String,
     },

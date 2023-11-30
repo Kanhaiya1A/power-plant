@@ -11,5 +11,10 @@ router.post(
   upload.none(),
   loginControllers.getEmployeesWithId
 );
+router.post(
+  '/getEmployeeReport',
+  upload.none(),
+  loginControllers.getEmployeeReport
+);
 
 module.exports = router;

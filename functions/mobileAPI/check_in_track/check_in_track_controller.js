@@ -1,6 +1,8 @@
 const Employee = require('./../employee/employee_model');
 const CheckInTask = require('./../check_in_task/check_in_task_model');
 const CheckInTrack = require('./check_in_track_model');
+const HandOver = require('./hand_over');
+const CheckOutTask = require('./../check_out_task/check_out_task_model')
 
 const CreateCheckInTrack = async (req, res) => {
   try {
@@ -14,6 +16,7 @@ const CreateCheckInTrack = async (req, res) => {
       hand_over_emp_name,
       latitude,
       longitude,
+      image
     } = req.body;
     if (!emp_id && !task_id) {
       return res.json({
@@ -31,36 +34,34 @@ const CreateCheckInTrack = async (req, res) => {
       hand_over_emp_name: hand_over_emp_name,
       latitude: latitude,
       longitude: longitude,
+      image: image,
     });
     if (saveData) {
-      // add create checkInassign
-      // console.log('hand_over', hand_over);
       if (hand_over == 'true') {
-        // console.log('save*****************************8');
-        // console.log(typeof task_id);
 
         let fetchTaskTable = await CheckInTask.findOne({ task_id });
         let employee = await Employee.findOne({ emp_id });
-        console.log('fetchTaskTable', fetchTaskTable);
         if (!fetchTaskTable) {
           return res.json({
             status: false,
-            message: 'failure',
+            message: 'task not found',
           });
         }
         const { shift_id, task_name } = fetchTaskTable;
-        let saveData = await CheckInTask.create({
+        let handOver = await HandOver.create({
           task_id: task_id,
-          task_name:
-            task_name +
-            ' assign by ' +
-            employee.emp_name +
-            ' With remarks: ' +
-            remarks,
+          task_name: task_name,
           shift_id: shift_id,
-          emp_id: hand_over_emp_id,
+          department: employee?.department,
+          assign_to_id: hand_over_emp_id,
+          assign_to_name: hand_over_emp_name,
+          assign_by_id: emp_id,
+          assign_by_name: employee?.emp_name,
+          remarks: remarks,
+          approved: false,
+          type: 'checkintrack',
         });
-        if (saveData) {
+        if (handOver) {
           return res.json({
             status: true,
             message: 'successfully assign the task!',
@@ -85,4 +86,96 @@ const CreateCheckInTrack = async (req, res) => {
   }
 };
 
-module.exports = { CreateCheckInTrack };
+const getHandOverData = async(req, res) => {
+  try {
+    const emp_id = req.body.emp_id;
+    const employee = await Employee.findOne({emp_id: emp_id});
+    if(!employee) {
+      return res.status(404).json({
+        status: false,
+        message: 'Employee not found'
+      })
+    }
+    const department = employee?.department;
+    const handOver = await HandOver.find({ department: department });
+
+    res.status(200).json({
+      status: true,
+      data: handOver,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: error.message
+    })
+  }
+}
+
+const handOverApproved = async(req, res) => {
+  try {
+    const emp_id = req.body.emp_id;
+    const handOverTableId = req.body.id;
+    const employee = await Employee.findOne({ emp_id: emp_id });
+    if (!employee) {
+      return res.status(404).json({
+        status: false,
+        message: 'Employee not found',
+      });
+    }
+
+    const handOver = await HandOver.findOne({_id: handOverTableId});
+    handOver.approved = true;
+    await handOver.save();
+
+
+    if (handOver && handOver.type == 'checkintrack') {
+      const findCheckInTask = await CheckInTask.findOne({
+        task_id: handOver?.task_id,
+      });
+      if(findCheckInTask){
+        const checkInTask = new CheckInTask({
+          task_id: findCheckInTask?.task_id,
+          shift_id: findCheckInTask?.shift_id,
+          task_name: findCheckInTask?.task_name,
+          is_repeat: findCheckInTask?.is_repeat,
+          task_icon: findCheckInTask?.task_icon,
+          description: findCheckInTask?.description,
+          emp_id: findCheckInTask?.emp_id,
+          is_remarks_mandatory: findCheckInTask?.is_remarks_mandatory,
+          is_photo_mandatory: findCheckInTask?.is_photo_mandatory,
+        });
+        await checkInTask.save();
+      }
+      
+    } else if (handOver && handOver.type == 'checkouttrack') {
+      const findCheckOutTask = await CheckOutTask.findOne({
+        task_id: handOver?.task_id,
+      });
+      if (findCheckOutTask) {
+        const checkOutTask = new CheckInTask({
+          task_id: findCheckOutTask?.task_id,
+          shift_id: findCheckOutTask?.shift_id,
+          task_name: findCheckOutTask?.task_name,
+          is_repeat: findCheckOutTask?.is_repeat,
+          task_icon: findCheckOutTask?.task_icon,
+          description: findCheckOutTask?.description,
+          emp_id: findCheckOutTask?.emp_id,
+          is_remarks_mandatory: findCheckOutTask?.is_remarks_mandatory,
+          is_photo_mandatory: findCheckOutTask?.is_photo_mandatory,
+        });
+        await checkOutTask.save();
+      }
+    }
+    res.status(200).json({
+      status: true,
+      message: 'Success',
+    })
+  } catch (error) {
+    res.status(200).json({
+      status: false,
+      message: error.message
+    })
+  }
+}
+
+module.exports = { CreateCheckInTrack, getHandOverData, handOverApproved };

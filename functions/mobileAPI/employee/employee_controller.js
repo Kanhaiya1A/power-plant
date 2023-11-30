@@ -57,7 +57,7 @@ const getEmployeesWithId = async (req, res) => {
     if (validEmployeeId.length == 0) {
       return res.json({
         status: false,
-        message: 'failure',
+        message: 'employee not found',
         employees: '',
       });
     }
@@ -66,9 +66,11 @@ const getEmployeesWithId = async (req, res) => {
     fetchEmployees = fetchEmployees.filter((employee) => {
       return (
         employee.emp_id != emp_id &&
-        employee.department == validEmployeeId[0].department
+        employee.department == validEmployeeId[0].department &&
+        employee.role == validEmployeeId[0].role
       );
     });
+    
     if (fetchEmployees) {
       return res.json({
         status: true,
@@ -91,4 +93,47 @@ const getEmployeesWithId = async (req, res) => {
   }
 };
 
-module.exports = { login, getEmployeesWithId };
+const getEmployeeReport = async (req, res) => {
+  try {
+    const { emp_id, } = req.body;
+    let validEmployeeId = await Employee.find({ emp_id });
+    if (validEmployeeId.length == 0) {
+      return res.json({
+        status: false,
+        message: 'employee not found',
+        employees: '',
+      });
+    }
+    let fetchEmployees = await Employee.find();
+
+    fetchEmployees = fetchEmployees.filter((employee) => {
+      return (
+        employee.emp_id != emp_id &&
+        employee.department == validEmployeeId[0].department &&
+        employee.role != validEmployeeId[0].role
+      );
+    });
+
+    if (fetchEmployees) {
+      return res.json({
+        status: true,
+        message: 'success',
+        employees: fetchEmployees,
+      });
+    } else {
+      return res.json({
+        status: false,
+        message: 'failure',
+        employees: '',
+      });
+    }
+  } catch (error) {
+    return res.json({
+      status: false,
+      message: error.message,
+      employees: '',
+    });
+  }
+};
+
+module.exports = { login, getEmployeesWithId, getEmployeeReport };

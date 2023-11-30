@@ -1,6 +1,7 @@
 const Employee = require('./../employee/employee_model');
 const CheckOutTask = require('./../check_out_task/check_out_task_model');
 const CheckOutTrack = require('./check_out_track_model');
+const HandOver = require('./../check_in_track/hand_over')
 
 const CreateCheckOutTrack = async (req, res) => {
   try {
@@ -46,16 +47,18 @@ const CreateCheckOutTrack = async (req, res) => {
           });
         }
         const { shift_id, task_name } = fetchTaskTable;
-        let saveData = await CheckOutAssign.create({
+        let saveData = await HandOver.create({
           task_id: task_id,
-          task_name:
-            task_name +
-            ' assign by ' +
-            employee.emp_name +
-            ' With remarks: ' +
-            remarks,
+          task_name: task_name,
           shift_id: shift_id,
-          emp_id: hand_over_emp_id,
+          department: employee?.department,
+          assign_to_id: hand_over_emp_id,
+          assign_to_name: hand_over_emp_name,
+          assign_by_id: emp_id,
+          assign_by_name: employee?.emp_name,
+          remarks: remarks,
+          approved: false,
+          type: 'checkouttrack',
         });
         if (saveData) {
           return res.json({

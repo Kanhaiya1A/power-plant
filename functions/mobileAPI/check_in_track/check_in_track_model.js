@@ -38,6 +38,9 @@ const checkInTrack = new Schema(
     longitude: {
       type: 'string',
     },
+    image: {
+      type: String,
+    }
   },
   {
     timestamps: true,

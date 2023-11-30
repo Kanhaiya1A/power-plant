@@ -36,6 +36,14 @@ app.use(
   `${commonUrl}/mobileApi/checkOutTrack`,
   require('./mobileAPI/check_out_track/check_out_track_router')
 );
+app.use(
+  `${commonUrl}/mobileApi/attendance`,
+  require('./mobileAPI/attendance/attendance_router')
+);
+app.use(
+  `${commonUrl}/mobileApi/report`,
+  require('./mobileAPI/check_report/check_report_router')
+);
 
 
 const port = 5000;
