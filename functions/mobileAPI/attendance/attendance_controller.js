@@ -70,4 +70,26 @@ const attendanceEnd = async (req, res) => {
   }
 };
 
-module.exports = { attendanceStart, attendanceEnd };
+const getAttendanceOfEmployee = async(req, res) => {
+  try {
+    const {emp_id} = req.body;
+    if(!emp_id){
+      return res.status(404).json({
+        status: false,
+        message: "ID not found"
+      })
+    }
+    const employees = await Attendance.find({emp_id});
+    res.status(200).json({
+      status: true,
+      data: employees,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 0,
+      message: error.message,
+    })
+  }
+}
+
+module.exports = { attendanceStart, attendanceEnd, getAttendanceOfEmployee };
